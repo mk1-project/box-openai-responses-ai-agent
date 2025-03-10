@@ -1,6 +1,6 @@
 import asyncio
 
-
+from agents.tool import WebSearchTool
 from openai.types.responses import ResponseContentPartDoneEvent, ResponseTextDeltaEvent
 
 from agents import Agent, Runner, TResponseInputItem
@@ -28,7 +28,8 @@ box_agent = Agent(
                 ask_box,
                 get_text_from_file,
                 box_search_folder_by_name,
-                box_list_folder_content_by_folder_id
+                box_list_folder_content_by_folder_id,
+                WebSearchTool()
             ],
         )
 
