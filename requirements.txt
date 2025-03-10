@@ -1,0 +1,3 @@
+file:///Users/shurrey/local/agents-sdk-main
+box-sdk-gen
+python-dotenv
