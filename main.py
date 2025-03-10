@@ -64,6 +64,7 @@ async def main():
         print(chr(27) + "[2J")
         print(f"{user_msg}\n")
         answer = strip_markdown(result.final_output)
+        answer.replace("\n\n", "\n")
         print(f"{answer}\n")
 
         inputs = result.to_input_list()
