@@ -1,3 +1,4 @@
-file:///Users/shurrey/local/agents-sdk-main
+# file:///Users/shurrey/local/agents-sdk-main
+file:///Users/rbarbosa/Documents/code/python/box/agents-sdk
 box-sdk-gen
 python-dotenv

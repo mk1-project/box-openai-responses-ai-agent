@@ -1,6 +1,8 @@
 import asyncio
 
 from agents.tool import WebSearchTool
+import logging
+
 from openai.types.responses import ResponseContentPartDoneEvent, ResponseTextDeltaEvent
 
 from agents import Agent, Runner, TResponseInputItem
@@ -10,12 +12,15 @@ from box_agent.box import (
     ask_box,
     get_text_from_file,
     box_search_folder_by_name,
-    box_list_folder_content_by_folder_id
+    box_list_folder_content_by_folder_id,
 )
 
+logger = logging.getLogger(__name__)
+logging.basicConfig(filename="error.log", level=logging.DEBUG)
+
 box_agent = Agent(
-            name="Box Agent",
-            instructions="""
+    name="Box Agent",
+    instructions="""
     You are a very helpful agent. You are a financial expert. 
     You have access to a number of tools from Box that allow you
     to search for files in Box either holistically or by set criteria.
@@ -23,20 +28,28 @@ box_agent = Agent(
     can retriever the text from the files. Your goal is to help the user
     find the information they need.
     """,
-            tools=[
-                file_search,
-                ask_box,
-                get_text_from_file,
-                box_search_folder_by_name,
-                box_list_folder_content_by_folder_id,
-                WebSearchTool()
+    tools=[
+        file_search,
+        ask_box,
+        get_text_from_file,
+        box_search_folder_by_name,
+        box_list_folder_content_by_folder_id,
+        WebSearchTool(),
             ],
         )
+    tools=[
+        file_search,
+        ask_box,
+        get_text_from_file,
+        box_search_folder_by_name,
+        box_list_folder_content_by_folder_id,
+    ],
+)
 
 
 async def main():
     msg = input("How can I help you today:\n")
-    
+
     """
     Look for all files in the 'Earnings Reports Q4' folder in Box. Analyze
     these files and write a report about the major trends facing technology 
@@ -54,13 +67,15 @@ async def main():
             elif isinstance(event, ResponseContentPartDoneEvent):
                 print("\n")
 
-        print(f"{result.to_input_list()}\n")
+        # print(f"{result.to_input_list()}\n")
+        print(f"{result.final_output}\n")
 
         inputs = result.to_input_list()
         print("\n==================================================================")
 
         user_msg = input("Follow up:\n")
         inputs.append({"content": user_msg, "role": "user"})
+
 
 if __name__ == "__main__":
     asyncio.run(main())
