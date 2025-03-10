@@ -35,14 +35,6 @@ box_agent = Agent(
         box_search_folder_by_name,
         box_list_folder_content_by_folder_id,
         WebSearchTool(),
-            ],
-        )
-    tools=[
-        file_search,
-        ask_box,
-        get_text_from_file,
-        box_search_folder_by_name,
-        box_list_folder_content_by_folder_id,
     ],
 )
 
