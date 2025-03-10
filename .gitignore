@@ -16,3 +16,4 @@ wheels/
 # Garbage
 .DS_Store
 error.log
+sample-prompts.txt

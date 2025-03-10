@@ -2,3 +2,4 @@
 file:///Users/rbarbosa/Documents/code/python/box/agents-sdk
 box-sdk-gen
 python-dotenv
+markdownify

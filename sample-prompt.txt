@@ -1,1 +1,18 @@
 Look for all files in the 'Earnings Reports Q4' folder in Box. Analyze these files and write a report about the major trends facing technology companies in Q4
+
+--
+
+
+
+WITH SEARCH:
+
+List out the companies in the Q4 tech earnings folder I have research on
+Analyze this research for top tech trends
+What are the biggest AI data-center build-outs mentioned and how are these covered in recent news?
+
+
+WITHOUT SEARCH:
+
+List out the companies in the Q4 tech earnings folder I have research on
+Analyze this research for top tech trends
+What are the biggest AI datacenter build-outs mentioned?

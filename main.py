@@ -1,6 +1,7 @@
 import asyncio
 import logging
 
+
 from openai.types.responses import ResponseContentPartDoneEvent, ResponseTextDeltaEvent
 
 from agents import Agent, Runner, TResponseInputItem
@@ -12,6 +13,8 @@ from box_agent.box import (
     box_search_folder_by_name,
     box_list_folder_content_by_folder_id,
 )
+
+from box_agent.lib.formating import strip_markdown
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(filename="error.log", level=logging.DEBUG)
@@ -37,14 +40,15 @@ box_agent = Agent(
 
 
 async def main():
-    msg = input("How can I help you today:\n")
+    print(chr(27) + "[2J")
+    user_msg = input("How can I help you today:\n")
 
     """
     Look for all files in the 'Earnings Reports Q4' folder in Box. Analyze
     these files and write a report about the major trends facing technology 
     companies in Q4"""
     agent = box_agent
-    inputs: list[TResponseInputItem] = [{"content": msg, "role": "user"}]
+    inputs: list[TResponseInputItem] = [{"content": user_msg, "role": "user"}]
     while True:
         result = Runner.run_streamed(
             agent,
@@ -57,12 +61,16 @@ async def main():
                 print("\n")
 
         # print(f"{result.to_input_list()}\n")
-        print(f"{result.final_output}\n")
+        print(chr(27) + "[2J")
+        print(f"{user_msg}\n")
+        answer = strip_markdown(result.final_output)
+        print(f"{answer}\n")
 
         inputs = result.to_input_list()
-        print("\n==================================================================")
+        print("\n\n\n")
 
         user_msg = input("Follow up:\n")
+
         inputs.append({"content": user_msg, "role": "user"})
 
 
