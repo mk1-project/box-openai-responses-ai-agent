@@ -1,4 +1,6 @@
 import asyncio
+
+from agents.tool import WebSearchTool
 import logging
 
 
@@ -35,6 +37,7 @@ box_agent = Agent(
         get_text_from_file,
         box_search_folder_by_name,
         box_list_folder_content_by_folder_id,
+        WebSearchTool(),
     ],
 )
 
