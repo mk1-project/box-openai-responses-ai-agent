@@ -16,7 +16,7 @@ from box_agent.box import (
     box_list_folder_content_by_folder_id,
 )
 
-from box_agent.lib.formating import strip_markdown
+from box_agent.lib.formatting import strip_markdown
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(filename="error.log", level=logging.DEBUG)
