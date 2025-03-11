@@ -25,7 +25,7 @@ from agents import Agent, function_tool
 
 
 @function_tool
-async def file_search( 
+async def file_search(
     query: str,
     file_extensions: List[str] | None = None,
     where_to_look_for_query: List[str] | None = None,
@@ -47,15 +47,20 @@ async def file_search(
     return:
         str: The search results.
     """
-    # Convert the where to look for query to content types
-    content_types: List[SearchForContentContentTypes] = []
-    if where_to_look_for_query:
-        for content_type in where_to_look_for_query:
-            content_types.append(SearchForContentContentTypes[content_type])
+    # # Convert the where to look for query to content types
+    # content_types: List[SearchForContentContentTypes] = []
+    # if where_to_look_for_query:
+    #     for content_type in where_to_look_for_query:
+    #         content_type = content_type.upper()
+    #         content_types.append(SearchForContentContentTypes[content_type])
 
     # Search for files with the query
     search_results = box_search(
-        BoxAuth().get_client(), query, file_extensions, content_types, ancestor_folder_ids
+        BoxAuth().get_client(),
+        query,
+        file_extensions,
+        # content_types,
+        ancestor_folder_ids,
     )
 
     # Return the "id", "name", "description" of the search results
@@ -67,8 +72,9 @@ async def file_search(
 
     return "\n".join(search_results)
 
+
 @function_tool
-async def ask_box( file_id: str, prompt: str) -> str:
+async def ask_box(file_id: str, prompt: str) -> str:
     """
     Ask box ai about a file in Box.
 
@@ -81,19 +87,21 @@ async def ask_box( file_id: str, prompt: str) -> str:
     return:
         str: The text content of the file.
     """
-    
+
     # check if file id isn't a string and convert to a string
     if not isinstance(file_id, str):
         file_id = str(file_id)
 
-    
     ai_agent = box_ai_agent_ask()
-    response = box_file_ai_ask(BoxAuth().get_client(), file_id, prompt=prompt, ai_agent=ai_agent)
+    response = box_file_ai_ask(
+        BoxAuth().get_client(), file_id, prompt=prompt, ai_agent=ai_agent
+    )
 
     return response
 
+
 @function_tool
-async def get_text_from_file( file_id: str) -> str:
+async def get_text_from_file(file_id: str) -> str:
     """
     Read the text content of a file in Box.
 
@@ -113,8 +121,9 @@ async def get_text_from_file( file_id: str) -> str:
 
     return response
 
+
 @function_tool
-async def box_search_folder_by_name( folder_name: str) -> str:
+async def box_search_folder_by_name(folder_name: str) -> str:
     """
     Locate a folder in Box by its name.
 
@@ -131,9 +140,10 @@ async def box_search_folder_by_name( folder_name: str) -> str:
 
     return "\n".join(search_results)
 
+
 @function_tool
 async def box_list_folder_content_by_folder_id(
-     folder_id: str, is_recursive: bool
+    folder_id: str, is_recursive: bool
 ) -> str:
     """
     List the content of a folder in Box by its ID.
@@ -145,7 +155,7 @@ async def box_list_folder_content_by_folder_id(
     return:
         str: The content of the folder in a json string format, including the "id", "name", "type", and "description".
     """
-    
+
     # check if file id isn't a string and convert to a string
     if not isinstance(folder_id, str):
         folder_id = str(folder_id)
