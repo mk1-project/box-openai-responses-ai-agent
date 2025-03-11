@@ -1,7 +1,23 @@
 # box-openai-responses-ai-agent
-The OpenAI Responses API will soon allow developers to inject additional data into the response. This includes web search, computer use, and other types of data. This repository shows how to use this new capability and a Box Agent to add proprietary unstructured data from your Box instance into your agentic work.
+The OpenAI Responses API will allow developers to inject additional data into the response. This includes web search, computer use, and other types of data. This repository shows how to use this new capability and a Box Agent to add proprietary unstructured data from your Box instance into your agentic work.
 
-To run, you will need access to the preview agents-sdk. If you have access, you can download a zip file and unzip that file into a folder. In requirements.txt, replace the current file path with yours.
+### Setup
+Clone this repo:
+```bash
+git clone https://github.com/box-community/doc-gen-ai-workshop.git
+```
+
+Create a python virtual environment and activate it:
+```bash
+python3.13 -m venv .venv
+source .venv/bin/activate
+```
+
+Install the requirements:
+```bash
+pip install --upgrade pip
+pip install -r requirements.txt
+```
 
 You will also need to set up your environment. First you will need a Box Platform app using Client Credentials Grant for authorization. You will also need to install and enable that app in your admin console. 
 
