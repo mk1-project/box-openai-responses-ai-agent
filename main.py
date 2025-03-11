@@ -1,12 +1,13 @@
 import asyncio
 
-from agents.tool import WebSearchTool
+
 import logging
 
 
 from openai.types.responses import ResponseContentPartDoneEvent, ResponseTextDeltaEvent
 
 from agents import Agent, Runner, TResponseInputItem
+from agents.tool import WebSearchTool
 
 from box_agent.box import (
     file_search,
