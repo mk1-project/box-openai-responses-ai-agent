@@ -1,27 +1,21 @@
-from typing import Any, AsyncIterator, List, Optional, Union, cast  # , Optional, cast
+from typing import List, Union
 from box_agent.lib.box_api import (
     box_search,
     box_file_text_extract,
     box_file_ai_ask,
     box_locate_folder_by_name,
-    box_file_ai_extract,
     box_folder_list_content,
-    box_ai_agent_ask,
-    box_ai_agent_extract,
 )
 from box_agent.lib.box_auth import BoxAuth
 
 import logging
 from box_sdk_gen import (
-    SearchForContentContentTypes,
     File,
     Folder,
-    BoxClient,
-    AiSingleAgentResponseFull,
 )
 import json
 
-from agents import Agent, function_tool
+from agents import function_tool
 
 
 @function_tool
@@ -92,9 +86,11 @@ async def ask_box(file_id: str, prompt: str) -> str:
     if not isinstance(file_id, str):
         file_id = str(file_id)
 
-    ai_agent = box_ai_agent_ask()
+    # ai_agent = box_ai_agent_ask()
     response = box_file_ai_ask(
-        BoxAuth().get_client(), file_id, prompt=prompt, ai_agent=ai_agent
+        BoxAuth().get_client(),
+        file_id,
+        prompt=prompt,
     )
 
     return response

@@ -22,6 +22,8 @@ from box_agent.lib.formatting import strip_markdown
 logger = logging.getLogger(__name__)
 logging.basicConfig(filename="error.log", level=logging.DEBUG)
 
+DEFAULT_MAX_TURNS = 100
+
 box_agent = Agent(
     name="Box Agent",
     instructions="""
@@ -51,6 +53,7 @@ async def main():
         result = Runner.run_streamed(
             agent,
             input=inputs,
+            max_turns=DEFAULT_MAX_TURNS,
         )
         async for event in result.stream_events():
             if isinstance(event, ResponseTextDeltaEvent):
