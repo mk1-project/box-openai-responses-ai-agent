@@ -1,5 +1,4 @@
-# file:///Users/shurrey/local/agents-sdk-main
-file:///Users/rbarbosa/Documents/code/python/box/agents-sdk
+openai-agents
 box-sdk-gen
 python-dotenv
 markdownify
