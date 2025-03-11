@@ -14,5 +14,5 @@ What are the biggest AI data-center build-outs mentioned and how are these cover
 WITHOUT SEARCH:
 
 List out the companies in the Q4 tech earnings folder I have research on
-Analyze this research for top tech trends
+Generate a comprehensive report that analyzes the top tech trends facing these companies in Q4
 What are the biggest AI datacenter build-outs mentioned?

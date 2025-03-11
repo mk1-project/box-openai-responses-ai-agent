@@ -43,7 +43,7 @@ box_agent = Agent(
 
 
 async def main():
-    print(chr(27) + "[2J")
+    # print(chr(27) + "[2J")
     user_msg = input("How can I help you today:\n")
 
     """
@@ -64,14 +64,14 @@ async def main():
                 print("\n")
 
         # print(f"{result.to_input_list()}\n")
-        print(chr(27) + "[2J")
-        print(f"{user_msg}\n")
+        # print(chr(27) + "[2J")
+        # print(f"{user_msg}\n")
         answer = strip_markdown(result.final_output)
         answer.replace("\n\n", "\n")
         print(f"{answer}\n")
 
         inputs = result.to_input_list()
-        print("\n\n\n")
+        print("\n\n")
 
         user_msg = input("Follow up:\n")
 
