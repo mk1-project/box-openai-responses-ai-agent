@@ -7,7 +7,9 @@ from box_agent.lib.box_api import (
     box_folder_list_content,
 )
 from box_agent.lib.box_auth import BoxAuth
-
+from box_agent.highlights_api import HighlightsAPI
+from box_agent.chunking import chunker
+from box_agent.pdf_extractor import PDFTextExtractor
 import logging
 from box_sdk_gen import (
     File,
@@ -171,3 +173,63 @@ async def box_list_folder_content_by_folder_id(
         for item in response
     ]
     return json.dumps(response)
+
+
+@function_tool
+async def get_highlights_from_file(file_id: str, query: str, max_highlights: int) -> str:
+    """
+    Extract text from a file, chunk it, and get highlights based on a query using MK1 Highlights API.
+
+    Args:
+        file_id: The Box file ID
+        query: The query to find relevant highlights for
+        max_highlights: Maximum number of highlights to return
+
+    Returns:
+        A string containing the most relevant highlights from the file
+    """
+    try:
+        # Get Box client
+        box_client = BoxAuth().get_client()
+        if box_client is None:
+            return "Error: Box authentication failed. Please check your Box credentials in the .env file."
+
+        file_info = box_client.files.get_file_by_id(file_id)
+        file_name = file_info.name
+
+        # Extract text from the file
+        if file_name.lower().endswith('.pdf'):
+            # For PDF files, use the PDF extractor
+            text = PDFTextExtractor.extract_text_from_box_file(file_id, box_client)
+        else:
+            # For other files, use the Box API
+            text = await box_file_text_extract(file_id)
+
+        if not text:
+            return f"Failed to extract text from file {file_name} (ID: {file_id})."
+
+        # Chunk the text
+        chunks = chunker.chunk(text)
+        logging.info(f"Chunks: length: {len(chunks)}")
+        # Get highlights from chunks
+        highlights = HighlightsAPI().get_highlights_from_chunks(chunks, query)
+        logging.info(f"Highlights: length: {len(highlights)}")
+        logging.info(f"Highlights: {highlights[0]}")
+        # Limit the number of highlights
+        highlights = highlights[:max_highlights]
+        logging.info(f"Received {len(highlights)} highlights from MK1")
+        if not highlights:
+            return f"No relevant highlights found in file {file_name} (ID: {file_id}) for query: {query}"
+
+        # Format the highlights
+        result = f"Highlights from {file_name} (ID: {file_id}) for query: {query}\n\n"
+
+        for i, highlight in enumerate(highlights, 1):
+            result += f"{i}. {highlight['text']}\n"
+
+        logging.info(f"Result: {result}")
+        return result
+
+    except Exception as e:
+        logging.error(f"Error getting highlights: {e}")
+        return f"Error getting highlights from file (ID: {file_id}): {str(e)}"
