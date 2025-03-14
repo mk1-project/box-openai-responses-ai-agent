@@ -196,28 +196,37 @@ async def get_highlights_from_file(file_id: str, query: str, max_highlights: int
 
         file_info = box_client.files.get_file_by_id(file_id)
         file_name = file_info.name
+        logging.debug(f"Processing file: {file_name} (ID: {file_id})")
 
         # Extract text from the file
         if file_name.lower().endswith('.pdf'):
             # For PDF files, use the PDF extractor
+            logging.debug(f"Extracting text from PDF file: {file_name}")
             text = PDFTextExtractor.extract_text_from_box_file(file_id, box_client)
         else:
             # For other files, use the Box API
+            logging.debug(f"Extracting text from non-PDF file: {file_name}")
             text = await box_file_text_extract(file_id)
 
         if not text:
+            logging.error(f"Failed to extract text from file {file_name} (ID: {file_id})")
             return f"Failed to extract text from file {file_name} (ID: {file_id})."
+
+        # Log text length
+        logging.debug(f"Extracted {len(text)} characters of text from {file_name}")
 
         # Chunk the text
         chunks = chunker.chunk(text)
-        logging.info(f"Chunks: length: {len(chunks)}")
+        logging.debug(f"Created {len(chunks)} chunks from {file_name}")
+
         # Get highlights from chunks
+        logging.debug(f"Requesting highlights for query: '{query}'")
         highlights = HighlightsAPI().get_highlights_from_chunks(chunks, query)
-        logging.info(f"Highlights: length: {len(highlights)}")
-        logging.info(f"Highlights: {highlights[0]}")
+
         # Limit the number of highlights
         highlights = highlights[:max_highlights]
-        logging.info(f"Received {len(highlights)} highlights from MK1")
+        logging.debug(f"Received {len(highlights)} highlights from MK1 Highlights API")
+
         if not highlights:
             return f"No relevant highlights found in file {file_name} (ID: {file_id}) for query: {query}"
 
@@ -227,7 +236,6 @@ async def get_highlights_from_file(file_id: str, query: str, max_highlights: int
         for i, highlight in enumerate(highlights, 1):
             result += f"{i}. {highlight['text']}\n"
 
-        logging.info(f"Result: {result}")
         return result
 
     except Exception as e:

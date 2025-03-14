@@ -3,6 +3,7 @@ import json
 import requests
 import logging
 import traceback
+import time
 from typing import List, Dict, Any, Optional
 from dotenv import load_dotenv
 
@@ -71,20 +72,42 @@ class HighlightsAPI:
         }
 
         try:
-            logging.info(f"Sending request to Highlights API with query: {query}")
+            # Only log to debug level to avoid console clutter
+            logging.debug(f"Sending request to Highlights API with query: {query}")
+            print(f"\n🔍 Highlights API: Sending request with query: '{query}'...")
+
+            start_time = time.time()
             response = requests.post(
                 self.BASE_URL,
                 headers=headers,
                 json=payload,
                 timeout=30  # Add timeout to prevent hanging
             )
+            request_time = time.time() - start_time
+
+            # Log timing to debug level
+            logging.debug(f"Highlights API request took {request_time:.2f} seconds")
 
             if response.status_code != 200:
                 logging.error(f"Highlights API error: {response.status_code} - {response.text}")
+                print(f"❌ Highlights API error: {response.status_code}")
                 return []
 
             result = response.json()
-            logging.info(f"Received response from Highlights API: {result}")
+
+            # Log metadata from the response - this is what we want to show
+            if "metadata" in result:
+                metadata = result.get("metadata", {})
+                logging.debug(f"Highlights API metadata: {json.dumps(metadata)}")
+
+                # Clean console output with just the essential information
+                print(f"✅ Highlights API: Request completed in {request_time:.2f}s | Query tokens: {metadata.get('num_query_tokens', 'N/A')} | Context tokens: {metadata.get('num_context_tokens', 'N/A')}")
+            else:
+                logging.debug(f"No metadata found in Highlights API response")
+                print(f"✅ Highlights API: Request completed in {request_time:.2f}s | No metadata available")
+
+            # Log full response to debug level only
+            logging.debug(f"Received response from Highlights API: {result}")
 
             # Format according to the actual API response structure
             highlights = []
@@ -98,9 +121,11 @@ class HighlightsAPI:
             return highlights
         except requests.exceptions.RequestException as e:
             logging.error(f"Error getting highlights: {e}\nTraceback: {traceback.format_exc()}")
+            print(f"❌ Highlights API error: {str(e)}")
             return []
         except Exception as e:
             logging.error(f"Unexpected error in get_highlights: {e}\nTraceback: {traceback.format_exc()}")
+            print(f"❌ Highlights API unexpected error: {str(e)}")
             return []
 
     def get_highlights_from_chunks(self, chunks: List[str], query: str, max_highlights_per_chunk: int = 10) -> List[Dict[str, Any]]:
@@ -142,20 +167,42 @@ class HighlightsAPI:
         }
 
         try:
-            logging.info(f"Sending request to Highlights API with query: {query}")
+            # Only log to debug level to avoid console clutter
+            logging.debug(f"Sending request to Highlights API with query: {query}")
+            print(f"\n🔍 Highlights API: Sending request with query: '{query}' for {len(chunks)} chunks...")
+
+            start_time = time.time()
             response = requests.post(
                 self.BASE_URL,
                 headers=headers,
                 json=payload,
                 timeout=60  # Longer timeout for larger request
             )
+            request_time = time.time() - start_time
+
+            # Log timing to debug level
+            logging.debug(f"Highlights API request took {request_time:.2f} seconds")
 
             if response.status_code != 200:
                 logging.error(f"Highlights API error: {response.status_code} - {response.text}")
+                print(f"❌ Highlights API error: {response.status_code}")
                 return []
 
             result = response.json()
-            logging.info(f"Received response from Highlights API: {result}")
+
+            # Log metadata from the response - this is what we want to show
+            if "metadata" in result:
+                metadata = result.get("metadata", {})
+                logging.debug(f"Highlights API metadata: {json.dumps(metadata)}")
+
+                # Clean console output with just the essential information
+                print(f"✅ Highlights API: Request completed in {request_time:.2f}s | Query tokens: {metadata.get('num_query_tokens', 'N/A')} | Context tokens: {metadata.get('num_context_tokens', 'N/A')}")
+            else:
+                logging.debug(f"No metadata found in Highlights API response")
+                print(f"✅ Highlights API: Request completed in {request_time:.2f}s | No metadata available")
+
+            # Log full response to debug level only
+            logging.debug(f"Received response from Highlights API: {result}")
 
             # Process the results based on the actual API response structure
             highlights = []
@@ -174,7 +221,9 @@ class HighlightsAPI:
             return highlights
         except requests.exceptions.RequestException as e:
             logging.error(f"Error getting highlights: {e}\nTraceback: {traceback.format_exc()}")
+            print(f"❌ Highlights API error: {str(e)}")
             return []
         except Exception as e:
             logging.error(f"Unexpected error in get_highlights_from_chunks: {e}\nTraceback: {traceback.format_exc()}")
+            print(f"❌ Highlights API unexpected error: {str(e)}")
             return []

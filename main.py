@@ -26,13 +26,17 @@ load_dotenv()
 
 # Configure logging
 logging.basicConfig(
-    level=logging.ERROR,
+    level=logging.WARNING,  # Only show warnings and above to reduce console clutter
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
     handlers=[
         logging.FileHandler("error.log"),
         logging.StreamHandler(sys.stdout)
     ]
 )
+
+# Set httpx logger to ERROR level to suppress HTTP request logs
+logging.getLogger("httpx").setLevel(logging.ERROR)
+
 logger = logging.getLogger(__name__)
 
 DEFAULT_MAX_TURNS = 100
