@@ -80,7 +80,7 @@ else:
 box_agent = Agent(
     name="Box Agent",
     instructions="""
-    You are a very helpful agent. You are a financial expert.
+    You are a very helpful agent.
     You have access to a number of tools from Box that allow you
     to search for files in Box either holistically or by set criteria.
 
@@ -93,7 +93,16 @@ box_agent = Agent(
     relevant parts of the document based on the user's query. This is more efficient
     than trying to process the entire document at once.
 
-    When using the get_highlights_from_file tool, you need to provide:
+    CRITICAL - QUERY PRESERVATION:
+    When using the get_highlights_from_file tool, you MUST use the EXACT query provided by the user.
+    DO NOT rephrase, summarize, or modify the query in any way.
+    For example, if the user asks "Summarize the Balance sheet for each of the companies 2024 10k individually",
+    you should use "Summarize the Balance sheet for each of the companies 2024 10k individually" as the query,
+    NOT a simplified version like "Balance Sheet" or "Balance Sheet Summary".
+
+    The Highlights API works best when given the exact, detailed query from the user.
+    IMPORTANT - PARAMETER REQUIREMENTS:
+    When calling get_highlights_from_file, you MUST provide ALL required parameters:
     - file_id: The ID of the file to analyze (you must get this from file_search first)
     - query: The user's query or what information they're looking for
     - max_highlights: The number of highlights to return (recommend using 5)
